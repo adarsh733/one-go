@@ -7,6 +7,25 @@ to the maintainer's private observation log; the number is kept so each change c
 
 ---
 
+From v1.0.0 on, each release starts with `## v<version> — <date> — <title>`. `/one-go update`
+prints the titles of the releases it brought in, so keep each title one plain line.
+
+## v1.0.0 — 2026-10-06 — version numbers and `/one-go update`
+
+- **A version number.** `VERSION` holds it; each release is a git tag `v<version>` on GitHub.
+- **Installed from GitHub with git**, not copied by hand (INSTALL.md), so updating is one step.
+  A copied folder keeps working but cannot update itself; `/one-go update` says how to switch.
+- **The new-version line.** When a job starts, dispatch prints one line if a newer version is
+  out. The check runs at most once a day in a background process and saves its answer in
+  `~/.one-go/update-check.json`, so a job never waits on the network and nothing changes offline.
+  `ONEGO_UPDATE_CHECK=off` turns it off.
+- **`/one-go update`** — a fourth public command. It moves the download forward to the newest
+  version tag (a fast-forward only, never a merge) and refreshes the Claude Code helper agent
+  when it was never edited by hand. It refuses, changing nothing, while a job is running in the
+  project, when one-go's own files were edited, when GitHub cannot be reached, and when the
+  download's history no longer lines up. `--check` only says whether a newer version exists.
+  Test: `p27-update.test.mjs`.
+
 ## 2026-10-06 — never-pick cards, quality ranking, one source for the public package
 
 - **`never_pick`** (optional card field, a one-line reason): such a model is never chosen by

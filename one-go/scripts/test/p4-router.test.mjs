@@ -98,7 +98,7 @@ test("Q7: words that DO name a job, a run number or a run folder are left to the
 test("the router's table puts every word in exactly the list the command table gives it", () => {
   const want = {
     // Pass 12 (2026-10-03): the bare board ("") left the public menu on purpose — it is plumbing.
-    public: ["dispatch", "stop", "help"],
+    public: ["dispatch", "stop", "update", "help"],
     alias: ["finish", "resume", "revive", "abort", "cancel"],
     plumbing: ["", "start", "pass", "brief", "next", "check-plan", "close", "watchdog", "worker", "info", "lanes", "models"],
     retired: ["add", "sub", "done", "stage", "ready", "audit", "status", "watch", "guard"]

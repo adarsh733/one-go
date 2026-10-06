@@ -2,9 +2,10 @@
 // /one-go — the engine's front door. Portable: lives in the skill folder, works in any project.
 // Every word it knows sits in exactly one of four lists (WORD_LISTS below).
 //
-// Public (three): board.mjs dispatch "<text>"  start a job, or carry on an existing one (a cut-off
+// Public (four):  board.mjs dispatch "<text>"  start a job, or carry on an existing one (a cut-off
 //                                              run is picked up on its own)
 //                 board.mjs stop [<job>]       stop now, ends through close
+//                 board.mjs update [--check]   take the newest one-go from GitHub, never mid-job
 //                 board.mjs help               prints reference/HELP.md (also --help, -h)
 // Silent aliases: finish (= dispatch) · resume, revive (= resume) · abort, cancel (= stop)
 // Plumbing:       the bare board (`board.mjs [--all]`: one table plus one footer line — it keeps
@@ -53,6 +54,8 @@ export const COMMANDS = Object.freeze({
   dispatch:    { file: "dispatch.mjs",    fn: "runDispatch", ctx: "full" },
   stop:         { file: "stop.mjs",        fn: "runStop",     ctx: "full", fit: "run" },
   help:         { file: "help.mjs",        fn: "runHelp",     ctx: "none", fit: "nothing" },
+  // reads no board: an update must work from any folder, even one with no project in it
+  update:       { file: "update.mjs",      fn: "runUpdate",   ctx: "none", fit: "nothing" },
   // silent aliases — work, never advertised. `finish` is dispatch itself: same file, same
   // function, same arguments, so the two can never drift.
   finish:       { file: "dispatch.mjs",    fn: "runDispatch", ctx: "full" },
@@ -84,7 +87,7 @@ export const RETIRED = Object.freeze(["add", "sub", "done", "stage", "ready", "a
 
 /** The four lists every known word sits in — exactly one each. */
 export const WORD_LISTS = Object.freeze({
-  public: Object.freeze(["dispatch", "stop", "help"]),
+  public: Object.freeze(["dispatch", "stop", "update", "help"]),
   alias: Object.freeze(["finish", "resume", "revive", "abort", "cancel"]),
   plumbing: Object.freeze(["", "start", "pass", "brief", "next", "check-plan", "close", "watchdog", "worker", "info", "lanes", "models"]),
   retired: RETIRED
@@ -177,7 +180,9 @@ async function main() {
       process.exit(1);
     }
     const fn = await load(entry);
-    return fn();
+    const code = await fn({ ARGV, CMD: word });
+    if (typeof code === "number") process.exitCode = code;
+    return;
   }
 
   const config = loadConfig(ROOT);
@@ -200,6 +205,16 @@ async function main() {
   }
 
   const fn = await load(entry);
+
+  // A job starting is when the person hears of a newer one-go: one line, read from the last saved
+  // check (never the network), printed first because dispatch ends with process.exit, and never
+  // with --seal, whose only output is a path.
+  if (entry.file === "dispatch.mjs" && !ARGV.includes("--seal")) {
+    const { updateNotice } = await import("./lib/update.mjs");
+    const line = updateNotice();
+    if (line) console.log(`${line}\n`);
+  }
+
   const code = await fn(ctx);
   if (typeof code === "number") process.exitCode = code;
 }

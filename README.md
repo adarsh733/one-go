@@ -16,12 +16,13 @@ splits a job into **passes** (steps small enough for one helper agent each), ask
 before it starts, and keeps the whole plan and every result on disk — so a run that gets cut off
 can be picked up where it stopped.
 
-## The three commands
+## The four commands
 
 | Type | What happens |
 |---|---|
 | `/one-go dispatch <what to build>` | Start or carry on a job from plain words. A run that was cut off is picked up where it stopped. |
 | `/one-go stop [<job>]` | Stop now; you still get the report. |
+| `/one-go update` | Take the newest version. Starting a job tells you in one line when there is one; it never updates by itself, and never in the middle of a job. |
 | `/one-go help` | The cheat sheet. |
 
 ## How a job runs
@@ -75,7 +76,13 @@ Samples are in `one-go/examples/`.
 
 ## Install
 
-See [INSTALL.md](INSTALL.md).
+```
+git clone https://github.com/adarsh733/one-go.git ~/.agents/one-go
+node ~/.agents/one-go/one-go/scripts/install.mjs --apply
+```
+
+The full steps, and how updates work, are in [INSTALL.md](INSTALL.md). The version you have is in
+`one-go/VERSION`; what changed is in `one-go/CHANGELOG.md`.
 
 The full test suite lives in the development build; a few tests are left out of this package on
 purpose because they use example file paths.

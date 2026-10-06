@@ -6,6 +6,7 @@
 |---|---|
 | `/one-go dispatch <what to build>` | **Start or carry on a job.** Say what you want in plain words — one sentence, a pasted note, a long spec. It reads every file the job touches **first**, then asks you every question in one numbered block. You answer once. Then it runs to the end and leaves one report. If a run got cut off (a usage limit, a closed window), the same command checks what is really done and carries on. |
 | `/one-go stop [<job>]` | **Stop now.** Everything it was holding is released, and you still get the report. |
+| `/one-go update` | **Get the newest version.** When a newer one-go is out, starting a job tells you in one line. This takes it — never in the middle of a job, and never over changes you made to its files. |
 | `/one-go help` | This sheet. |
 
 **For the agent:** everything else is plumbing the agent runs for you — see `SKILL.md` and `reference/CONDUCTOR.md`.

@@ -6,7 +6,7 @@
 //
 // A "command row" is a markdown table row whose first cell starts with `/one-go`. In BOTH
 // SKILL.md and reference/HELP.md:
-//   1. each of the three public commands (dispatch, stop, help) has exactly one command row;
+//   1. each of the four public commands (dispatch, stop, update, help) has exactly one command row;
 //   2. no command row advertises anything else (plumbing and silent aliases stay off the menu —
 //      the agent's plumbing table in SKILL.md writes commands without the `/one-go` prefix, and
 //      the bare `/one-go <anything>` form is a silent alias and the bare `/one-go` board is
@@ -19,7 +19,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 // The public command table (D9, obs 0124: the bare board is plumbing now, not on the menu). Key = what the first cell's command resolves to.
-export const PUBLIC = ["dispatch", "stop", "help"];
+// v1.0.0 adds update, so a person can take a new version in one word.
+export const PUBLIC = ["dispatch", "stop", "update", "help"];
 
 /** What a `/one-go …` first cell stands for: "board", "anything", or the first word. */
 export function commandKey(cell) {

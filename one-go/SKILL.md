@@ -29,7 +29,7 @@ Two things in one command:
 | **model card** | a project-local record of which models each tool lists, checked when a run starts, and how well each fits the tiers | `~/.claude/one-go/model-cards.json` |
 | **house rules** | optional per-project extras | `.claude/one-go/house-rules.md` |
 
-## The three commands
+## The four commands
 
 The person types `/one-go …`. The agent runs `node <this skill folder>/scripts/board.mjs …` and
 prints what it returns, adding only facts the engine cannot know.
@@ -38,6 +38,7 @@ prints what it returns, adding only facts the engine cannot know.
 |---|---|---|
 | `/one-go dispatch <what to build>` | Start a job, or carry on one already on the board — from a sentence, a pasted note or a long spec. A run that was cut off (usage limit, closed window) is checked against the real files and picked up on its own. | `board.mjs dispatch "<what to build>"` |
 | `/one-go stop [<job>]` | Stop now. Claims are released and the report is still written. | `board.mjs stop …` |
+| `/one-go update` | Take the newest one-go from GitHub. Refuses, changing nothing, while a job is running or when one-go's own files were edited. `--check` only says whether a newer one exists. | `board.mjs update` |
 | `/one-go help` | Prints the cheat sheet `reference/HELP.md` exactly as written. Reads nothing else. | `board.mjs help` |
 
 ### Reading what the user typed
@@ -58,11 +59,20 @@ prints what it returns, adding only facts the engine cannot know.
 6. **Retired words** — `add`, `sub`, `done`, `stage`, `ready`, `audit`, `status`, `watch`, `guard`.
    The engine prints one line saying so. Pass that line on; never turn the word into a job.
 
+### The new-version line
+
+`dispatch` may print one line first: `A newer one-go is out (v…; you have v…). Type /one-go
+update to get it …`. Pass it on to the person in one line, then carry on with the job — never
+update on your own. It comes from a check made at most once a day in the background, only for a
+copy installed from GitHub (INSTALL.md); it never waits on the network. `ONEGO_UPDATE_CHECK=off`
+turns it off. This copy's version is in `VERSION`; what changed is in `CHANGELOG.md`.
+
 ## Where things live
 
 | Path | What it is |
 |---|---|
 | `SKILL.md` | this file |
+| `VERSION` | this copy's version number, for example `1.0.0` |
 | `reference/HELP.md` | the cheat sheet — read it only when `help` is asked for |
 | `reference/CONDUCTOR.md` | how to run a job — read it **the moment a job starts**, not before |
 | `reference/HOSTS.md` | how to start a helper in each tool, and with which model |
@@ -181,7 +191,7 @@ needs to confirm.
 
 `reference/HELP.md` is part of the command. A public command added, renamed or removed here
 without the same change in HELP.md is a bug. `node scripts/check-help-rows.mjs` checks that both
-files list each of the three public commands exactly once and advertise nothing else.
+files list each of the four public commands exactly once and advertise nothing else.
 
 ## Offering it
 

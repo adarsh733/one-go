@@ -14,14 +14,14 @@ import { PUBLIC, problemsIn, checkSkill } from "../check-help-rows.mjs";
 const SKILL = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 const read = rel => fs.readFileSync(path.join(SKILL, rel), "utf8");
 
-test("the public menu is exactly dispatch, stop, help; the bare board is plumbing", () => {
-  assert.deepEqual([...WORD_LISTS.public].sort(), ["dispatch", "help", "stop"]);
+test("the public menu is exactly dispatch, stop, update, help; the bare board is plumbing", () => {
+  assert.deepEqual([...WORD_LISTS.public].sort(), ["dispatch", "help", "stop", "update"]);
   assert.ok(WORD_LISTS.plumbing.includes(""), "the bare board sits in plumbing");
   assert.ok(!WORD_LISTS.public.includes(""));
   const all = Object.values(WORD_LISTS).flat();
   assert.equal(new Set(all).size, all.length, "no word is in two lists");
   assert.ok(COMMANDS[""], "the bare board is still a working command");
-  assert.deepEqual([...PUBLIC].sort(), ["dispatch", "help", "stop"]);
+  assert.deepEqual([...PUBLIC].sort(), ["dispatch", "help", "stop", "update"]);
 });
 
 test("the bare board and --all keep working, quietly", () => {
@@ -36,7 +36,7 @@ test("the bare board and --all keep working, quietly", () => {
   } finally { sb.teardown(); }
 });
 
-test("SKILL.md and reference/HELP.md list the three public commands once and no bare /one-go row", () => {
+test("SKILL.md and reference/HELP.md list the four public commands once and no bare /one-go row", () => {
   const r = checkSkill(SKILL);
   assert.deepEqual(r.problems, []);
   assert.equal(r.code, 0);
@@ -46,11 +46,11 @@ test("SKILL.md and reference/HELP.md list the three public commands once and no 
 });
 
 test("check-help-rows flags a bare /one-go row as not public, and a missing public row", () => {
-  const withBoard = "| `/one-go` | board |\n| `/one-go dispatch <x>` | a |\n| `/one-go stop` | b |\n| `/one-go help` | c |\n";
+  const withBoard = "| `/one-go` | board |\n| `/one-go dispatch <x>` | a |\n| `/one-go stop` | b |\n| `/one-go update` | u |\n| `/one-go help` | c |\n";
   assert.match(problemsIn("T", withBoard).join("\n"), /advertises `\/one-go`/);
-  const noStop = "| `/one-go dispatch <x>` | a |\n| `/one-go help` | c |\n";
+  const noStop = "| `/one-go dispatch <x>` | a |\n| `/one-go update` | u |\n| `/one-go help` | c |\n";
   assert.match(problemsIn("T", noStop).join("\n"), /\/one-go stop.*0 command rows/);
-  const ok = "| `/one-go dispatch <x>` | a |\n| `/one-go stop` | b |\n| `/one-go help` | c |\n";
+  const ok = "| `/one-go dispatch <x>` | a |\n| `/one-go stop` | b |\n| `/one-go update` | u |\n| `/one-go help` | c |\n";
   assert.deepEqual(problemsIn("T", ok), []);
 });
 
