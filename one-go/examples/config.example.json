@@ -1,0 +1,36 @@
+{
+  "claims_file": ".claude/ACTIVE-WORK.md",
+  "frozen_dirs": ["docs/frozen"],
+  "screen_gate": "off",
+  "screen_slug_pattern": "^[a-z]\\d{2}-",
+  "extra_sources": {
+    "open_loops": null,
+    "pending_push": ".claude/PENDING-PUSH.md"
+  },
+  "sweep_dirs": [],
+  "worklog": ".claude/WORKLOG.md",
+  "register_command": null,
+  "worker_always_allowed": [],
+  "report_extras": [
+    { "when": "committed", "text": "Commits waiting for a push: {commits}. Nothing was pushed." },
+    { "when": "open_items", "text": "Open the report at {run_dir}/report.md and answer the open items." }
+  ],
+  "tiers": {},
+  "default_host": null,
+  "_parallel_limit": "How many passes may run at once. null = as many as the waves allow, up to 8. Or a whole number 1 to 16. --parallel N on start wins over it.",
+  "parallel_limit": null,
+  "_hosts": "Model ids only as each tool lists them (reference/HOSTS.md). A <placeholder> names no model, so the helper inherits the main model. Or use \"auto\" to let the scout pick from the model cards.",
+  "hosts": {
+    "codex": { "think": "<model slug from the Codex models list>", "build": "<model slug>", "mechanical": "<model slug>" },
+    "antigravity": { "think": "<pro>", "build": "<flash>", "mechanical": "<flash_lite>" },
+    "opencode": { "think": "<provider/model>", "build": "<provider/model>", "mechanical": "<provider/model>" }
+  },
+  "_model_cards": "Path to the card file recording which models each tool lists and when. null = no cards, the scout never runs. Path may be relative (from project root) or absolute.",
+  "model_cards": ".claude/one-go/model-cards.json",
+  "_model_scout": "Settings for the model discovery and selection system: max_age_days (refresh if older), preference (quality, quality-where-it-counts, cost), opencode_providers (which providers to include when discovering models).",
+  "model_scout": {
+    "max_age_days": 14,
+    "preference": "quality-where-it-counts",
+    "opencode_providers": ["opencode", "opencode-go"]
+  }
+}
