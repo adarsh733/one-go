@@ -10,6 +10,28 @@ to the maintainer's private observation log; the number is kept so each change c
 From v1.0.0 on, each release starts with `## v<version> — <date> — <title>`. `/one-go update`
 prints the titles of the releases it brought in, so keep each title one plain line.
 
+## v1.0.1 — 2026-10-08 — first-job fixes and safer tool set-up
+
+- **The reading pass gets your words, not the job name.** `dispatch "<job name>" --seal` (the form
+  the engine itself prints) used to hand the reading helper only the job name, so it planned blind.
+  It now uses the request saved when the job was made. (Obs 0236.) Test: `p28-first-run.test.mjs`.
+- **No more "…seal-brief" rows on the board.** The reading instructions file was being read as a
+  job of its own; such rows an older version saved are now hidden, and dropped the next time the
+  board is saved. (Obs 0233.)
+- **A big passing check stays passing.** A "Proven by" command that printed more than 1 MB was
+  cut off and recorded as a failure. The limit is now 256 MB.
+- **Job names never end on a joining word** ("add-a-greeting-function", not "…-function-to").
+- **Codex helpers can write files.** `codex exec` is read-only unless told otherwise; HOSTS.md now
+  starts Codex helpers with `--sandbox workspace-write`, and says what to check in OpenCode and
+  Antigravity so a helper never waits on a yes/no prompt nobody can answer. It also gives the real
+  place of Antigravity's `agentapi` launcher.
+- **Whole-app checks** also recognise `playwright`, `cypress` and `e2e`.
+- **Example settings are all off.** `examples/config.example.json` ships every extra switched off,
+  each with a one-line note; `examples/house-rules.example.md` uses neutral examples.
+- `/one-go help` no longer shows the agent's own instruction line at the top.
+- Tests that assumed the development copy now also pass in a GitHub install (Windows line endings,
+  a home folder whose path contains a tool's name).
+
 ## v1.0.0 — 2026-10-06 — version numbers and `/one-go update`
 
 - **A version number.** `VERSION` holds it; each release is a git tag `v<version>` on GitHub.

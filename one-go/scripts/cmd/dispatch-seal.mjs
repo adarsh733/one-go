@@ -7,6 +7,7 @@
 // (obs 0101), "run check-plan until it passes" (obs 0102), and the house's conductor section
 // and paths when the project has them. No owner name, no project path is baked in here.
 import { tiersFor } from "../lib/route.mjs";
+import { WHOLE_TREE_CHECK_WORDS } from "../lib/plan.mjs";
 import { cardsStatus, sealCardsLine } from "./models.mjs";
 
 /** The nine things every reading gathers. Same words as reference/CONDUCTOR.md. */
@@ -191,7 +192,7 @@ export function buildSealBrief({ slug, text, named = [], planPath, boardCmd, roo
   L.push("  two passes that could run side by side must not share a file. Patterns count once expanded:");
   L.push("  `src/**` and `src/a.js` overlap.");
   L.push("- **The plan has a `## Run shape` section** (see above); a plan without one is refused.");
-  L.push("- A \"Proven by\" command that contains one of the words capture, screenshot, shoot, review-page or journey");
+  L.push(`- A "Proven by" command that contains one of the words ${WHOLE_TREE_CHECK_WORDS.slice(0, -1).join(", ")} or ${WHOLE_TREE_CHECK_WORDS[WHOLE_TREE_CHECK_WORDS.length - 1]}`);
   L.push("  reads the whole app, so that pass runs only when no other pass is still writing. The words are read from the");
   L.push("  \"Proven by\" command only, never from the description. Use them only when the check truly reads the whole app.");
   L.push("");

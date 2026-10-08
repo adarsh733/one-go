@@ -1,33 +1,54 @@
 {
-  "claims_file": ".claude/ACTIVE-WORK.md",
-  "frozen_dirs": ["docs/frozen"],
+  "_readme": "Copy to <project>/.claude/one-go/config.json. Every extra below is OFF as shipped. Turn on only what your project has; a key you delete is the same as off. Keys starting with _ are notes and are ignored.",
+
+  "_claims_file": "A table where several chat windows note which files they are holding, e.g. \".claude/ACTIVE-WORK.md\". null = off.",
+  "claims_file": null,
+
+  "_frozen_dirs": "Folders of approved designs that need a yes before they change, e.g. [\"docs/frozen\"]. check-plan warns when a pass writes there.",
+  "frozen_dirs": [],
+
+  "_screen_gate": "\"on\" refuses to start a job named like a screen (see screen_slug_pattern) until its design folder is marked frozen. Leave \"off\" unless you use frozen_dirs.",
   "screen_gate": "off",
-  "screen_slug_pattern": "^[a-z]\\d{2}-",
-  "extra_sources": {
-    "open_loops": null,
-    "pending_push": ".claude/PENDING-PUSH.md"
-  },
+  "screen_slug_pattern": null,
+
+  "_extra_sources": "Extra lists the board reads: pending_push = a file listing commits waiting for a push, e.g. \".claude/PENDING-PUSH.md\".",
+  "extra_sources": { "open_loops": null, "pending_push": null },
+
   "sweep_dirs": [],
-  "worklog": ".claude/WORKLOG.md",
+
+  "_worklog": "A file that gets one line per finished run, e.g. \".claude/WORKLOG.md\". null = off.",
+  "worklog": null,
+
+  "_register_command": "A command your project uses to approve a new file path before it is written. null = off.",
   "register_command": null,
+
+  "_worker_always_allowed": "Paths every helper may write besides its own files, e.g. [\"notes/**\"].",
   "worker_always_allowed": [],
+
+  "_report_extras": "Extra lines for the end-of-run report. when = committed or open_items; {commits} and {run_dir} are filled in.",
   "report_extras": [
-    { "when": "committed", "text": "Commits waiting for a push: {commits}. Nothing was pushed." },
-    { "when": "open_items", "text": "Open the report at {run_dir}/report.md and answer the open items." }
+    { "when": "committed", "text": "Commits waiting for a push: {commits}. Nothing was pushed." }
   ],
+
   "tiers": {},
+
+  "_default_host": "The tool passes run in when start does not say: claude, codex, antigravity, opencode or inline. null = claude.",
   "default_host": null,
+
   "_parallel_limit": "How many passes may run at once. null = as many as the waves allow, up to 8. Or a whole number 1 to 16. --parallel N on start wins over it.",
   "parallel_limit": null,
-  "_hosts": "Model ids only as each tool lists them (reference/HOSTS.md). A <placeholder> names no model, so the helper inherits the main model. Or use \"auto\" to let the scout pick from the model cards.",
+
+  "_hosts": "Model ids only as each tool lists them (reference/HOSTS.md). A <placeholder> names no model, so the helper inherits the main model. Or use \"auto\" to let the scout pick from the model cards. Claude Code needs no entry.",
   "hosts": {
     "codex": { "think": "<model slug from the Codex models list>", "build": "<model slug>", "mechanical": "<model slug>" },
     "antigravity": { "think": "<pro>", "build": "<flash>", "mechanical": "<flash_lite>" },
     "opencode": { "think": "<provider/model>", "build": "<provider/model>", "mechanical": "<provider/model>" }
   },
-  "_model_cards": "Path to the card file recording which models each tool lists and when. null = no cards, the scout never runs. Path may be relative (from project root) or absolute.",
-  "model_cards": ".claude/one-go/model-cards.json",
-  "_model_scout": "Settings for the model discovery and selection system: max_age_days (refresh if older), preference (quality, quality-where-it-counts, cost), opencode_providers (which providers to include when discovering models).",
+
+  "_model_cards": "Path to a model card file, e.g. \".claude/one-go/model-cards.json\". Needed only when a host above uses \"auto\". null = no cards, the scout never runs.",
+  "model_cards": null,
+
+  "_model_scout": "Settings for the scout: max_age_days (ask to refresh cards older than this), preference (quality, quality-where-it-counts, cost), opencode_providers (which OpenCode providers to consider; add the ones you have signed in to).",
   "model_scout": {
     "max_age_days": 14,
     "preference": "quality-where-it-counts",

@@ -204,6 +204,8 @@ export function runCheck({ root, command, requiredCommand, runId, passN, attempt
   try {
     output = execSync(command, {
       cwd: root, encoding: "utf8", timeout: timeoutMs,
+      // Node's default is 1 MB: a passing suite that prints more was killed and read as a failure.
+      maxBuffer: 256 * 1024 * 1024,
       stdio: ["ignore", "pipe", "pipe"], windowsHide: true
     });
   } catch (e) {

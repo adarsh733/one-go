@@ -18,6 +18,15 @@ import { COMMANDS, WORD_LISTS } from "../board.mjs";
 const SKILL = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 const tmp = name => fs.mkdtempSync(path.join(os.tmpdir(), `one-go-p27-${name}-`));
 const rm = (...dirs) => { for (const d of dirs) fs.rmSync(d, { recursive: true, force: true }); };
+// A copy of the skill made by hand (no git download above it). Built in the temp folder, so the
+// tests below hold even when they are run from a real GitHub install of one-go.
+function copiedSkill() {
+  const base = tmp("copied");
+  const dir = path.join(base, "one-go");
+  fs.mkdirSync(dir, { recursive: true });
+  fs.copyFileSync(path.join(SKILL, "VERSION"), path.join(dir, "VERSION"));
+  return { base, dir };
+}
 
 function g(cwd, ...args) {
   return execFileSync("git", ["-c", "user.name=t", "-c", "user.email=t@example.invalid", "-c", "commit.gpgsign=false",
@@ -93,10 +102,13 @@ test("the notice line: only when the saved check knows of something newer", () =
 });
 
 test("updateNotice never checks for a copy not installed from GitHub (the dev copy, a copied folder)", () => {
-  assert.equal(installClone(SKILL), null, "the development copy is not a download");
-  let started = 0;
-  assert.equal(updateNotice({ skillDir: SKILL, start: () => started++ }), null);
-  assert.equal(started, 0);
+  const c = copiedSkill();
+  try {
+    assert.equal(installClone(c.dir), null, "a copied folder is not a download");
+    let started = 0;
+    assert.equal(updateNotice({ skillDir: c.dir, start: () => started++ }), null);
+    assert.equal(started, 0);
+  } finally { rm(c.base); }
 });
 
 test("updateNotice: background check at most once a day, notice read from the saved answer, never throws", () => {
@@ -203,10 +215,14 @@ test("update refuses, changing nothing, when one-go's own files were edited", as
 });
 
 test("update refuses for a copy not installed from GitHub", async () => {
-  const lines = [];
-  const code = await runUpdate({ ARGV: ["update"] }, { skillDir: SKILL, onegoDir: tmp("none"), env: process.env, log: l => lines.push(l) });
-  assert.equal(code, 1);
-  assert.match(lines.join("\n"), /was not installed from GitHub, so it cannot update itself\. Nothing was changed\./);
+  const c = copiedSkill();
+  const none = tmp("none");
+  try {
+    const lines = [];
+    const code = await runUpdate({ ARGV: ["update"] }, { skillDir: c.dir, onegoDir: none, env: process.env, log: l => lines.push(l) });
+    assert.equal(code, 1);
+    assert.match(lines.join("\n"), /was not installed from GitHub, so it cannot update itself\. Nothing was changed\./);
+  } finally { rm(c.base, none); }
 });
 
 test("update is a public command that reads no board", () => {

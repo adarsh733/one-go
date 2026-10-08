@@ -49,7 +49,14 @@ export function gatherSources({ board, tasks, persist = false, config }) {
   if (!config) config = loadConfig(ROOT);
   // 1 · plans/*.md — the State: line
   const plansDir = path.join(ONEGO, "plans");
-  for (const f of globFiles(plansDir, n => n.endsWith(".md"))) {
+  // A seal brief (`<job>.seal-brief.md`) quotes the plan template, `State:` line included — it is
+  // the reader's instructions, never a job of its own (obs 0233). Rows an older engine already
+  // saved for one are dropped: made from a plan file, never run, nothing hand-added to them.
+  for (const [slug, t] of Object.entries(tasks)) {
+    if (slug.endsWith(".seal-brief") && t && t.source === "plan" && !t.run_id
+      && !(Array.isArray(t.subtasks) && t.subtasks.length)) delete tasks[slug];
+  }
+  for (const f of globFiles(plansDir, n => n.endsWith(".md") && !n.endsWith(".seal-brief.md"))) {
     const slug = f.replace(/\.md$/, "");
     const text = readText(path.join(plansDir, f));
     if (!text) continue;

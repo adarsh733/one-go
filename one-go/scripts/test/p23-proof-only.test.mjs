@@ -49,7 +49,9 @@ const verify = (sb, n) => runBoard(["pass", SLUG, String(n), "done", "--proven",
 // ---------------------------------------------------------------- one shared word list
 
 test("one shared list, read from the check command only", () => {
-  assert.deepEqual(WHOLE_TREE_CHECK_WORDS, ["capture", "screenshot", "shoot", "review-page", "journey"]);
+  assert.deepEqual(WHOLE_TREE_CHECK_WORDS, ["capture", "screenshot", "shoot", "review-page", "journey", "playwright", "cypress", "e2e"]);
+  assert.equal(wholeTreeCheckWord("npx playwright test"), "playwright");
+  assert.equal(wholeTreeCheckWord("npm run test:e2e"), "e2e");
   assert.equal(wholeTreeCheckWord("node scripts/capture-screens.mjs home"), "capture");
   assert.equal(wholeTreeCheckWord("node --test test/x.test.mjs"), null);
   // A description word never counts.

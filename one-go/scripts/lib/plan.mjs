@@ -108,7 +108,8 @@ export function extractCheckTarget(cmd) {
 //
 // ONE list, shared with lib/evidence.mjs. Read from the "Proven by" command ONLY — a description
 // that says "match the screenshot" is not a check that drives the app.
-export const WHOLE_TREE_CHECK_WORDS = ["capture", "screenshot", "shoot", "review-page", "journey"];
+// playwright, cypress and e2e are the names most projects give the same kind of check.
+export const WHOLE_TREE_CHECK_WORDS = ["capture", "screenshot", "shoot", "review-page", "journey", "playwright", "cypress", "e2e"];
 const WHOLE_TREE_CHECK_RE = new RegExp(`\\b(${WHOLE_TREE_CHECK_WORDS.join("|")})\\b`, "i");
 
 /** The whole-app word a check command uses (lower-cased), or null. Reads the command only. */

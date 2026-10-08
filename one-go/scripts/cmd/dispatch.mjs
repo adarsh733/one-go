@@ -128,10 +128,15 @@ export function lookupForDispatch(tasks, text) {
   return hit;
 }
 
+const FILLER_TAIL = new Set(["a", "an", "the", "to", "of", "for", "and", "or", "with", "in", "on", "at", "from", "by", "into", "so", "that"]);
+
 /** A slug for a new job that never collides with an existing job or plan file. */
 export function freshSlug(tasks, text, plansDir) {
   const title = text.length > 60 ? text.slice(0, 60).trim() : text;
-  const base = slugify(title) || "captured-idea";
+  // A name cut at five words must not end on a joining word ("add-a-greeting-function-to").
+  const parts = slugify(title).split("-").filter(Boolean);
+  while (parts.length > 2 && FILLER_TAIL.has(parts[parts.length - 1])) parts.pop();
+  const base = parts.join("-") || "captured-idea";
   // A draft plan with no job behind it (an older engine sealed without capturing) is reused, not
   // dodged — that is where the reading already got to. A job, or a sealed plan, is never reused.
   const taken = s => {
@@ -322,12 +327,18 @@ export async function runDispatch(ctx = {}) {
       const why = newJobReason(hit);
       if (why) console.error(why);
     }
+    // The job's own words, saved when it was created (obs 0236). The engine tells the conductor
+    // to call `--seal` with the job NAME, so that argument alone would hand the reader a slug.
+    const saved = tasks[slug] && typeof tasks[slug].what === "string" ? tasks[slug].what.trim() : "";
+    const jobText = !saved || saved === text ? (saved || text)
+      : text === slug ? saved
+      : `${saved}\n\n${text}`;
     fs.mkdirSync(plansDir, { recursive: true });
     const planPath = path.join(plansDir, `${slug}.md`);
     const brief = buildSealBrief({
       slug,
-      text,
-      named: extractNamedFiles(text),
+      text: jobText,
+      named: extractNamedFiles(jobText),
       planPath: planPath.split(path.sep).join("/"),
       boardCmd: BOARD_CMD,
       root: ROOT.split(path.sep).join("/"),

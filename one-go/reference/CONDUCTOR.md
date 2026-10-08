@@ -206,7 +206,7 @@ verification". A file the check generates but the plan does not declare still co
   its folder exists or an earlier pass declares that folder. Patterns (`src/search/*.js`) are fine.
 - **Every row has the same number of cells as the header**, and no cell contains `\|`.
 - **No two passes that run side by side write the same file** (see §5).
-- **Whole-app check words** — `capture`, `screenshot`, `shoot`, `review-page`, `journey` in the
+- **Whole-app check words** — `capture`, `screenshot`, `shoot`, `review-page`, `journey`, `playwright`, `cypress`, `e2e` in the
   "Proven by" cell make a pass read the whole app and run only when no other pass is still writing
   (not merely finished, but "built" — past the point of making changes). Use them only when the
   check truly needs a complete, stable app. Read these words from the "Proven by" command only,

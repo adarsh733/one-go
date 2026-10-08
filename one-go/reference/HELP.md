@@ -1,6 +1,5 @@
-# `/one-go help` — printed exactly as written, nothing added above or below
-
-### `/one-go` — the thing that finishes big jobs while you are away
+<!-- For the agent: print this file exactly as written, with nothing added above or below. -->
+# `/one-go` — the thing that finishes big jobs while you are away
 
 | Type this | What happens |
 |---|---|

@@ -10,8 +10,7 @@ they go in `config.json` (see `config.example.json`).
 - Read `docs/ARCHITECTURE.md` in the reading pass (pass 0) before writing any question; the folder
   layout there is the one every pass must follow.
 - A pass that changes the database schema always runs alone and uses the think model.
-- Any new `.md` file needs its register line approved by the user before `start`.
-- Keep an undo of a frozen design and its re-freeze in the same pass; never split them.
+- Any pass that adds a new dependency asks about it in the question block first.
 
 ## For every worker
 
@@ -21,7 +20,6 @@ they go in `config.json` (see `config.example.json`).
 
 ## Before a run is called finished
 
-- Every claim this run took is released in the claims file, each with a one-line outcome.
-- One line per pass appended to the work log.
-- Anything committed is listed in the pending-push file.
-- Screens touched by the run are checked by the user on their phone.
+- `npm test` passes on the whole project, not only on each pass's own files.
+- The README still describes how to run the project.
+- Anything that changed what a user sees is listed for the user to try by hand.

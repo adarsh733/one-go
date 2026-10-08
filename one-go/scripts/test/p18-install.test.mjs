@@ -207,7 +207,9 @@ test("--tool limits the run to one tool and touches no other", () => {
     assert.ok(!fs.existsSync(path.join(home, ".claude")));
     assert.ok(!fs.existsSync(path.join(home, ".agents")));
     assert.ok(!fs.existsSync(path.join(home, ".config")));
-    assert.doesNotMatch(r.out, /claude|opencode|antigravity/);
+    // The first column names the tool; a path later on the line may contain any word.
+    const tools = r.out.split(/\r?\n/).map(l => l.split(/\s+/)[0]).join("\n");
+    assert.doesNotMatch(tools, /^(claude|opencode|antigravity)$/m);
   } finally { done(); }
 });
 

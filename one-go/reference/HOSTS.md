@@ -18,13 +18,28 @@ guessed. Re-check a row when the tool updates; the "Checked against" column says
 | Tool (host) | How a helper starts | How a tier becomes a model | Model id the tool accepts | When the tier has no model | Checked against |
 |---|---|---|---|---|---|
 | `claude` — Claude Code | Agent tool, `subagent_type: "one-go-worker"`, prompt = the one line | `model:` on the Agent call; built-in `think → opus`, `build → sonnet`, `mechanical → haiku`, or `hosts.claude.<tier>` | a lowercase alias or model id, no spaces | the built-in alias is used | the Agent tool's `model` parameter |
-| `codex` — Codex CLI | `codex exec "<the one line>"` from the project folder (non-interactive) | `-m <model>` added only when `hosts.codex.<tier>` names one | a lowercase slug, no spaces, exactly as in Codex's own models list (`~/.codex/models_cache.json`, entries marked `list`) — a display name with spaces is refused | no `-m`: the helper inherits the main model (`model =` in `~/.codex/config.toml`) | `codex exec --help` (`-m, --model <MODEL>`); the models list |
+| `codex` — Codex CLI | `codex exec --sandbox workspace-write "<the one line>"` from the project folder (non-interactive). Never drop `--sandbox workspace-write`: on its own, `codex exec` is read-only, so the helper could not write a single file | `-m <model>` added only when `hosts.codex.<tier>` names one | a lowercase slug, no spaces, exactly as in Codex's own models list (`~/.codex/models_cache.json`, entries marked `list`) — a display name with spaces is refused | no `-m`: the helper inherits the main model (`model =` in `~/.codex/config.toml`) | `codex exec --help` (`-m, --model <MODEL>`); the models list |
 | `opencode` — OpenCode | `opencode run "<the one line>"` from the project folder | `-m <provider/model>` added only when `hosts.opencode.<tier>` names one | `provider/model`, exactly as `opencode models` prints it | no `-m`: the helper inherits OpenCode's configured model | `opencode run --help` (`-m, --model … provider/model`); `opencode models` |
-| `antigravity` — Antigravity | `agentapi new-conversation --model=<id> "<the one line>"` (the `agentapi` launcher in Antigravity's own `bin` folder); the IDE's `antigravity-ide chat -m agent "<the one line>"` also opens one, but its `-m` is the chat **mode**, not a model | `--model=<id>` on `agentapi new-conversation` only | `flash_lite`, `flash` or `pro` — nothing else | no `--model`: the conversation uses the model last picked in the IDE | `agentapi --help`; `antigravity-ide chat --help` |
+| `antigravity` — Antigravity | `agentapi new-conversation --model=<id> "<the one line>"` (the `agentapi` launcher sits in `~/.gemini/antigravity-ide/bin/` or `~/.gemini/antigravity/bin/` — `agentapi.bat` on Windows — not in the program folder); the IDE's `antigravity-ide chat -m agent "<the one line>"` also opens one, but its `-m` is the chat **mode**, not a model | `--model=<id>` on `agentapi new-conversation` only | `flash_lite`, `flash` or `pro` — nothing else | no `--model`: the conversation uses the model last picked in the IDE | `agentapi --help`; `antigravity-ide chat --help` |
 | `inline` — no helpers | the conductor chat does each pass itself, one at a time | none — tiers are advice only | — | the chat runs whatever model it runs | — |
 
 Where a command is not on the PATH (Codex's desktop install keeps `codex` in its own versioned
 `bin` folder), find it once, write its full path into the project's notes, and use that.
+
+**Before the first run in a tool, check that a helper can write and run commands without stopping
+to ask.** A helper started from the command line has no one to answer a yes/no prompt, so it waits
+forever or gives up.
+
+- **Codex** — `--sandbox workspace-write` lets it write inside the project. That sandbox has no
+  internet: a pass that must install packages or call a web service needs the person's yes to use
+  `--sandbox danger-full-access` for that pass, asked in the question block.
+- **OpenCode** — writing and running commands are allowed unless the person's OpenCode settings set
+  `edit` or `bash` to `"ask"`. If they do, ask once in the question block whether to add `--auto`
+  (approve everything not explicitly denied) to `opencode run`, or run the job `inline`.
+- **Antigravity** — if its agent is set to ask before running terminal commands, set
+  `"requires_approval": true` for `antigravity` in `config.json` so the question block covers it.
+
+When any of these cannot be settled, run the job `inline`.
 
 ## Which host a run uses
 

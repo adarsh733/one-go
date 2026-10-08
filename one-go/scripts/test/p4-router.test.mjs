@@ -41,7 +41,9 @@ test("an unknown flag in first place is treated the same way (one line, exit 1)"
 });
 
 test("help, --help and -h print reference/HELP.md exactly and exit 0", () => {
-  const want = fs.readFileSync(HELP_MD, "utf8").trim();
+  // Verbatim, minus <!-- … --> notes meant for the agent only.
+  const want = fs.readFileSync(HELP_MD, "utf8").replace(/<!--[\s\S]*?-->\s*/g, "").trim();
+  assert.ok(!/<!--|For the agent: print this file/.test(want), "the agent's note must not reach the person");
   const sb = makeSandbox();
   try {
     for (const w of ["help", "--help", "-h", "HELP"]) {

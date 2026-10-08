@@ -10,7 +10,8 @@ export const HELP_PATH = path.join(path.dirname(fileURLToPath(import.meta.url)),
 export function runHelp(helpPath = HELP_PATH) {
   const helpText = readText(typeof helpPath === "string" ? helpPath : HELP_PATH);
   if (helpText) {
-    console.log(helpText.trim());
+    // Notes for the agent sit in <!-- … --> comments; the person never sees them.
+    console.log(helpText.replace(/<!--[\s\S]*?-->\s*/g, "").trim());
     process.exit(0);
   }
   console.log("Help file not found at " + helpPath);

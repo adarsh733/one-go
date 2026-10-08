@@ -60,5 +60,7 @@ test("both copies of the worker agent are identical and forbid searching from a 
   assert.match(live, /name a folder/);
   assert.match(live, /timeout/);
   const installed = path.join(process.env.USERPROFILE || process.env.HOME || "", ".claude", "agents", "one-go-worker.md");
-  if (fs.existsSync(installed)) assert.equal(fs.readFileSync(installed, "utf8"), live, "the two copies drifted");
+  // Line endings differ by checkout (a Windows git download writes CRLF); the words must not.
+  const lf = s => s.replace(/\r\n/g, "\n");
+  if (fs.existsSync(installed)) assert.equal(lf(fs.readFileSync(installed, "utf8")), lf(live), "the two copies drifted");
 });
